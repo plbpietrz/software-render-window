@@ -16,6 +16,10 @@ public class DrawFramePanel extends JPanel implements Drawable {
 
     private final BufferedImage activeFrame;
 
+    public DrawFramePanel(final Component parent) {
+        this(parent.getWidth(), parent.getHeight());
+    }
+
     public DrawFramePanel(final int width, final int height) {
         activeFrame = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
     }
