@@ -25,7 +25,9 @@ public class MainFrame {
         }
 
         JFrame frame = buildFrame(width, height);
-        frame.add(new DrawFramePanel(frame));
+        DrawFramePanel panel = new DrawFramePanel(frame);
+        PrimitiveDrawable pd = new PrimitiveDrawableOnWritableRaster(panel.getDrawableRaster());
+        frame.add(panel);
     }
 
 
