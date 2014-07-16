@@ -17,14 +17,11 @@ public class PrimitiveDrawableOnWritableRaster implements PrimitiveDrawable {
     private final int[] rasterDataBuffer;
 
     public PrimitiveDrawableOnWritableRaster(Raster writableRaster) {
-        int rasterNumberOfBands = writableRaster.getNumBands();
-        Preconditions.checkArgument(rasterNumberOfBands == 1, "Number of bands expected 1, actual " + rasterNumberOfBands);
-
         DataBuffer dataBuffer = writableRaster.getDataBuffer();
         if (DataBuffer.TYPE_INT == dataBuffer.getDataType()) {
-            rasterDataBuffer = ((DataBufferInt)dataBuffer).getData();
             width = writableRaster.getWidth();
             height = writableRaster.getHeight();
+            rasterDataBuffer = ((DataBufferInt)dataBuffer).getData();
         } else {
             throw new IllegalArgumentException(
                     "Provided raster of type: " +
