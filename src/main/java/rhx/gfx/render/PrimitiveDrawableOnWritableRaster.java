@@ -1,7 +1,5 @@
 package rhx.gfx.render;
 
-import com.google.common.base.Preconditions;
-
 import java.awt.*;
 import java.awt.image.*;
 
@@ -30,7 +28,7 @@ public class PrimitiveDrawableOnWritableRaster implements PrimitiveDrawable {
         }
     }
 
-    private void DrwDrawPixel(final int x, final int y, Color color) {
+    private void drawPixel(final int x, final int y, Color color) {
         rasterDataBuffer[x + y * width] = color.getRGB();
     }
 
@@ -59,7 +57,7 @@ public class PrimitiveDrawableOnWritableRaster implements PrimitiveDrawable {
                 d0 = 2 * dy - dx;
                 di = d0;
 
-                DrwDrawPixel(sx, sy, color);
+                drawPixel(sx, sy, color);
 
                 for (i = 0; i < dx; ++i) {
                     ix += 1;
@@ -69,7 +67,7 @@ public class PrimitiveDrawableOnWritableRaster implements PrimitiveDrawable {
                     } else  {
                         di += dp;
                     }
-                    DrwDrawPixel(ix, iy, color);
+                    drawPixel(ix, iy, color);
                 }
             } else {
                 dx = ex - sx;
@@ -81,7 +79,7 @@ public class PrimitiveDrawableOnWritableRaster implements PrimitiveDrawable {
                 d0 = 2 * dx - dy;
                 di = d0;
 
-                DrwDrawPixel(sx, sy, color);
+                drawPixel(sx, sy, color);
                 for (i = 0; i < dy; ++i) {
                     iy += 1;
                     if (di >= 0) {
@@ -90,7 +88,7 @@ public class PrimitiveDrawableOnWritableRaster implements PrimitiveDrawable {
                     } else {
                         di += dp;
                     }
-                    DrwDrawPixel(ix, iy, color);
+                    drawPixel(ix, iy, color);
                 }
             }
         } else {
@@ -104,7 +102,7 @@ public class PrimitiveDrawableOnWritableRaster implements PrimitiveDrawable {
                 d0 = - 2 * dy + dx;
                 di = d0;
 
-                DrwDrawPixel(sx, sy, color);
+                drawPixel(sx, sy, color);
                 for (i = 0; i < dx; ++i) {
                     ix += 1;
                     if (di <= 0) {
@@ -113,7 +111,7 @@ public class PrimitiveDrawableOnWritableRaster implements PrimitiveDrawable {
                     } else {
                         di += dp;
                     }
-                    DrwDrawPixel(ix, iy, color);
+                    drawPixel(ix, iy, color);
                 }
             } else {
                 dx = ex - sx;
@@ -125,7 +123,7 @@ public class PrimitiveDrawableOnWritableRaster implements PrimitiveDrawable {
                 d0 = - 2 * dx + dy;
                 di = d0;
 
-                DrwDrawPixel(sx, sy, color);
+                drawPixel(sx, sy, color);
                 for (i = 0; i < dy; ++i) {
                     iy -= 1;
                     if (di <= 0) {
@@ -134,10 +132,20 @@ public class PrimitiveDrawableOnWritableRaster implements PrimitiveDrawable {
                     } else {
                         di += dp;
                     }
-                    DrwDrawPixel(ix, iy, color);
+                    drawPixel(ix, iy, color);
                 }
             }
         }
         return this;
+    }
+
+    @Override
+    public PrimitiveDrawable drawCircle(int cx, int cy, int r) {
+        return drawCircle(cx, cy, r, 1, 1);
+    }
+
+    @Override
+    public PrimitiveDrawable drawCircle(int cx, int cy, int r, int p, int q) {
+        throw new UnsupportedOperationException("TO BE IMPLEMENTED!!");
     }
 }

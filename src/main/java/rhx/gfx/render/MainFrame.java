@@ -30,6 +30,7 @@ public class MainFrame {
         pd.drawLine(5, 5, 45, 45, Color.RED);
         pd.drawLine(45, 250, 55, 90, Color.BLUE);
         frame.add(panel);
+
     }
 
 
