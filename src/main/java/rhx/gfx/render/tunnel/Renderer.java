@@ -8,6 +8,8 @@ import rhx.gfx.render.Drawable;
  */
 public interface Renderer {
 
+    Renderer init(Drawable drawable);
+
     Renderer drawOn(Drawable drawable);
 
 }

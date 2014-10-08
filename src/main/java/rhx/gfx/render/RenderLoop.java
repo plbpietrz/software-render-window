@@ -19,6 +19,7 @@ public class RenderLoop implements Render, Runnable {
 
     @Override
     public void run() {
+        renderer.init(surface);
         if (maxFps == NOT_SET) {
             while (renderFlag) {
                 render();
