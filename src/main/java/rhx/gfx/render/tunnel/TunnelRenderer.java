@@ -17,12 +17,16 @@ public class TunnelRenderer implements Renderer {
     private final int texHeight;
     private final int texWidth;
 
+    private double movement = 0.1;
+    private double animation = 0;
+
     private int scrWidth;
     private int scrHeight;
+    private int shiftX, shiftY, shiftLookX, shiftLookY;
 
-    private int distances[][];
     private int angles[][];
     private int texture[];
+    private int distances[][];
     private Component loopback;
 
 
@@ -42,11 +46,6 @@ public class TunnelRenderer implements Renderer {
         }
     }
 
-    private int shiftX, shiftY, shiftLookX, shiftLookY;
-
-    static double movement = 0.1;
-    static double animation = 0;
-
     @Override
     public Renderer init(Drawable drawable) {
         IntDim dimension = drawable.getDimension();
@@ -58,8 +57,8 @@ public class TunnelRenderer implements Renderer {
 
         for (int x = 0; x < scrWidth * 2; x++) {
             for (int y = 0; y < scrHeight * 2; y++) {
-                distances[x][y] = (int) ((30.0 * texHeight / Math.sqrt((x - scrWidth/2) * (x - scrWidth/2) + (y - scrHeight/2) * (y - scrHeight/2))) % texHeight);
-                   angles[x][y] = (int) (0.5 * texWidth * Math.atan2(y - scrHeight/2, x - scrWidth/2) / Math.PI);
+                distances[x][y] = (int) ((30.0 * texHeight / Math.sqrt((x - scrWidth / 2) * (x - scrWidth / 2) + (y - scrHeight/2) * (y - scrHeight / 2))) % texHeight);
+                   angles[x][y] = (int) (0.5 * texWidth * Math.atan2(y - scrHeight / 2, x - scrWidth / 2) / Math.PI);
             }
         }
         return this;
@@ -67,24 +66,23 @@ public class TunnelRenderer implements Renderer {
 
     @Override
     public Renderer drawOn(Drawable drawable) {
-        IntDim dimension = drawable.getDimension();
         DataBufferInt dataBuffer = (DataBufferInt) drawable.getDrawableRaster().getDataBuffer();
-        int rasterWidth = drawable.getDimension().width;
         int[] offScreenRaster = dataBuffer.getData();
         animation += 3;
         movement  += 1;
 
-        shiftX = (int) (texWidth * 1.0 * animation);
-        shiftY = (int) (texHeight * 0.25 * animation);
+        shiftX = (int) (texWidth + animation);
+        shiftY = (int) (texHeight + movement);
 
-        shiftLookX = scrWidth / 2 + (int)(scrWidth / 2 * Math.sin(animation));
-        shiftLookY = scrHeight / 2 + (int)(scrHeight / 2 * Math.sin(animation * 2.0));
+        shiftLookX = texWidth / 4 + (int)(texWidth / 4 * Math.sin(animation * 0.1));
+        shiftLookY = texHeight / 4 + (int)(texHeight / 4 * Math.sin(animation * 0.2));
+
 
         for (int y = 0, cursor = 0; y < scrHeight; y++) {
             for (int x = 0; x < scrWidth; x++, cursor++) {
-                offScreenRaster[x + y * rasterWidth] =
-                        texture[(distances[x + shiftLookX][y + shiftLookY] + shiftX) % texWidth +
-                                 (((angles[x + shiftLookX][y + shiftLookY] + shiftY) % texHeight) * scrWidth)];
+                int texX = (distances[x + shiftLookX][y + shiftLookY] + shiftX) % texWidth;
+                int texY = ((angles[x + shiftLookX][y + shiftLookY] + shiftY) % texHeight) * texWidth;
+                offScreenRaster[x + y * scrWidth] = texture[texX + texY];
             }
         }
         loopback.repaint();
