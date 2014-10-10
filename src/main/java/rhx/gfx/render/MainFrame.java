@@ -1,5 +1,7 @@
 package rhx.gfx.render;
 
+import rhx.gfx.render.tunnel.TunnelRenderer;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
@@ -26,11 +28,14 @@ public class MainFrame {
 
         JFrame frame = buildFrame(width, height);
         DrawFramePanel panel = new DrawFramePanel(frame);
-        PrimitiveDrawable pd = new PrimitiveDrawableOnWritableRaster(panel.getDrawableRaster());
-        pd.drawLine(5, 5, 45, 45, Color.RED);
-        pd.drawLine(45, 250, 55, 90, Color.BLUE);
         frame.add(panel);
-
+        new Thread(
+                new RenderLoop()
+                        .setDrawableSurface(panel)
+                        .setRenderer(new TunnelRenderer())
+                        .setDisplay(frame)
+                        .setMaxFPS(10)
+        ).start();
     }
 
 

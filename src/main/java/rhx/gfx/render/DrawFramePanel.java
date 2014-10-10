@@ -1,7 +1,5 @@
 package rhx.gfx.render;
 
-import rhx.gfx.render.Drawable;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.*;
@@ -16,7 +14,7 @@ public class DrawFramePanel extends JPanel implements Drawable {
     public static final int RED         = 0xff0000;
     public static final int GREEN       = 0x00ff00;
     public static final int BLUE        = 0x0000ff;
-    public static final int NO_ALPHA    = 0x00000000;
+    public static final int NO_ALPHA    = 0x000000;
 
     private final BufferedImage activeFrame;
 

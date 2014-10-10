@@ -1,7 +1,9 @@
 package rhx.gfx.render;
 
 import java.awt.*;
-import java.awt.image.*;
+import java.awt.image.DataBuffer;
+import java.awt.image.DataBufferInt;
+import java.awt.image.Raster;
 
 /**
  * This implementation of {@link rhx.gfx.render.PrimitiveDrawable} is based on and underlying int {@link java.awt.image.Raster}.
@@ -22,9 +24,7 @@ public class PrimitiveDrawableOnWritableRaster implements PrimitiveDrawable {
             rasterDataBuffer = ((DataBufferInt)dataBuffer).getData();
         } else {
             throw new IllegalArgumentException(
-                    "Provided raster of type: " +
-                            writableRaster.getClass().getCanonicalName() +
-                    " is not supported.");
+                    "Provided raster of type: " + writableRaster.getClass().getCanonicalName() + " is not supported.");
         }
     }
 
