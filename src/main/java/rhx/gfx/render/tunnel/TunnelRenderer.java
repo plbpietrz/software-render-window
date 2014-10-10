@@ -64,8 +64,8 @@ public class TunnelRenderer implements Renderer {
     public Renderer drawOn(Drawable drawable) {
         DataBufferInt dataBuffer = (DataBufferInt) drawable.getDrawableRaster().getDataBuffer();
         int[] offScreenRaster = dataBuffer.getData();
-        animation += 3;
-        movement += 1;
+        animation += 1;
+        movement  += 1;
 
         shiftX = (int) (texWidth + animation);
         shiftY = (int) (texHeight + movement);
