@@ -1,5 +1,6 @@
 package rhx.gfx.render;
 
+import java.awt.*;
 import java.awt.image.Raster;
 
 /**
@@ -18,5 +19,5 @@ public interface Drawable {
      * Get the size of the underlying drawing plane.
      * @return {@link java.awt.Dimension}
      */
-    IntDim getDimension();
+    Dimension getDimension();
 }

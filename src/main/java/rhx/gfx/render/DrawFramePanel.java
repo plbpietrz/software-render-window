@@ -52,7 +52,7 @@ public class DrawFramePanel extends JPanel implements Drawable {
     }
 
     @Override
-    public IntDim getDimension() {
-        return new IntDim(activeFrame.getWidth(), activeFrame.getHeight());
+    public Dimension getDimension() {
+        return new Dimension(activeFrame.getWidth(), activeFrame.getHeight());
     }
 }
