@@ -3,10 +3,12 @@ package rhx.gfx.render.tunnel;
 import rhx.gfx.render.Drawable;
 
 /**
- * Renderer is a component that does a draw operation on a given {@link rhx.gfx.render.Drawable} surface.
+ * Renderer.
  * Created by rhinox on 2014-08-11.
  */
 public interface Renderer {
+
+    Renderer init(Drawable drawable);
 
     /**
      * Draw operation.
