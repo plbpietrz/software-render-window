@@ -32,7 +32,8 @@ public class MainFrame {
         new Thread(
                 new RenderLoop()
                         .setDrawableSurface(panel)
-                        .setRenderer(new TunnelRenderer(frame))
+                        .setRenderer(new TunnelRenderer())
+                        .setDisplay(frame)
                         .setMaxFPS(10)
         ).start();
     }

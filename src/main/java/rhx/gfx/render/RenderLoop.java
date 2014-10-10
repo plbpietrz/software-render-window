@@ -2,9 +2,11 @@ package rhx.gfx.render;
 
 import rhx.gfx.render.tunnel.Renderer;
 
+import java.awt.*;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Main render loop. Can be run in a separate thread.
  * Created by rhinox on 2014-08-15.
  */
 public class RenderLoop implements Render, Runnable {
@@ -16,6 +18,7 @@ public class RenderLoop implements Render, Runnable {
     private boolean renderFlag = true;
     private Renderer renderer;
     private Drawable surface;
+    private Component display;
 
     @Override
     public void run() {
@@ -29,6 +32,7 @@ public class RenderLoop implements Render, Runnable {
                 while (renderFlag) {
                     instant = System.currentTimeMillis();
                     render();
+                    display.repaint();
                     instant = System.currentTimeMillis() - instant;
                     Thread.sleep(TimeUnit.MILLISECONDS.toMillis(frameBudget - instant));
                 }
@@ -56,11 +60,26 @@ public class RenderLoop implements Render, Runnable {
         return this;
     }
 
+    @Override
+    public RenderLoop setDisplay(Component display) {
+        this.display = display;
+        return this;
+    }
+
+    /**
+     * Stop render loop from drawing image.
+     * @return this object
+     */
     public RenderLoop stop() {
         this.renderFlag = false;
         return this;
     }
 
+    /**
+     * Set the target maximum frames per second.
+     * @param fps frames per second
+     * @return this object
+     */
     public RenderLoop setMaxFPS(int fps) {
         this.maxFps = fps;
         return this;

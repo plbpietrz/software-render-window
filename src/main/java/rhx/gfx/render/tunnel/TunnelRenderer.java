@@ -3,13 +3,13 @@ package rhx.gfx.render.tunnel;
 import rhx.gfx.render.Drawable;
 
 import javax.imageio.ImageIO;
-import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
 import java.awt.image.PixelGrabber;
 import java.io.IOException;
 
 /**
+ * Tunnel effect renderer
  * Created by rhinox on 2014-10-05.
  */
 public class TunnelRenderer implements Renderer {
@@ -20,11 +20,8 @@ public class TunnelRenderer implements Renderer {
     private int distances[][];
     private int angles[][];
     private int texture[];
-    private Component loopback;
 
-    public TunnelRenderer(Component loopback) throws IOException {
-        this.loopback = loopback;
-
+    public TunnelRenderer() throws IOException {
         BufferedImage textureImage = ImageIO.read(getClass().getClassLoader().getResource("tunnelarboreatex.png"));
 
         scrWidth = textureImage.getWidth();
@@ -60,7 +57,7 @@ public class TunnelRenderer implements Renderer {
         int rasterWidth = drawable.getDimension().width;
         int[] offScreenRaster = dataBuffer.getData();
         animation += 3;
-        movement  += 1;
+        movement += 1;
 
         shiftX = (int) (scrWidth + animation);
         shiftY = (int) (scrHeight + movement);
@@ -70,7 +67,6 @@ public class TunnelRenderer implements Renderer {
                 offScreenRaster[x + y * rasterWidth] = texture[(distances[x][y] + shiftX) % scrWidth + (((angles[x][y] + shiftY) % scrHeight) * scrWidth)];
             }
         }
-        loopback.repaint();
         return this;
     }
 }
