@@ -44,16 +44,16 @@ public class TunnelRenderer implements Renderer {
 
     @Override
     public Renderer init(Drawable drawable) {
-        IntDim dimension = drawable.getDimension();
-        scrWidth  = dimension.width;
+        Dimension dimension = drawable.getDimension();
+        scrWidth = dimension.width;
         scrHeight = dimension.height;
 
         distances = new int[scrWidth * 2][scrHeight * 2];
-        angles    = new int[scrWidth * 2][scrHeight * 2];
+        angles = new int[scrWidth * 2][scrHeight * 2];
 
         for (int x = 0; x < scrWidth * 2; x++) {
             for (int y = 0; y < scrHeight * 2; y++) {
-                distances[x][y] = (int) ((30.0 * texHeight / Math.sqrt((x - scrWidth / 2) * (x - scrWidth / 2) + (y - scrHeight/2) * (y - scrHeight / 2))) % texHeight);
+                distances[x][y] = (int) ((30.0 * texHeight / Math.sqrt((x - scrWidth / 2) * (x - scrWidth / 2) + (y - scrHeight / 2) * (y - scrHeight / 2))) % texHeight);
                    angles[x][y] = (int) (0.5 * texWidth * Math.atan2(y - scrHeight / 2, x - scrWidth / 2) / Math.PI);
             }
         }
@@ -65,13 +65,13 @@ public class TunnelRenderer implements Renderer {
         DataBufferInt dataBuffer = (DataBufferInt) drawable.getDrawableRaster().getDataBuffer();
         int[] offScreenRaster = dataBuffer.getData();
         animation += 3;
-        movement  += 1;
+        movement += 1;
 
         shiftX = (int) (texWidth + animation);
         shiftY = (int) (texHeight + movement);
 
-        shiftLookX = texWidth / 4 + (int)(texWidth / 4 * Math.sin(animation * 0.1));
-        shiftLookY = texHeight / 4 + (int)(texHeight / 4 * Math.sin(animation * 0.2));
+        shiftLookX = texWidth / 4 + (int) (texWidth / 4 * Math.sin(animation * 0.1));
+        shiftLookY = texHeight / 4 + (int) (texHeight / 4 * Math.sin(animation * 0.2));
 
 
         for (int y = 0, cursor = 0; y < scrHeight; y++) {
