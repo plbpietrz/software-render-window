@@ -2,21 +2,15 @@ package rhx.gfx.render.tunnel;
 
 import rhx.gfx.render.Drawable;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
-import java.awt.image.PixelGrabber;
 import java.io.IOException;
 
 /**
  * Tunnel effect renderer
  * Created by rhinox on 2014-10-05.
  */
-public class TunnelRenderer implements Renderer {
-    private final int texHeight;
-    private final int texWidth;
-
+public class TunnelRenderer extends ImageRenderer {
     private double movement = 0.1;
     private double animation = 0;
 
@@ -25,21 +19,10 @@ public class TunnelRenderer implements Renderer {
     private int shiftX, shiftY, shiftLookX, shiftLookY;
 
     private int angles[][];
-    private int texture[];
     private int distances[][];
 
-    public TunnelRenderer() throws IOException {
-        BufferedImage textureImage = ImageIO.read(getClass().getClassLoader().getResource("tunnelarboreatex.png"));
-
-        texWidth = textureImage.getWidth();
-        texHeight = textureImage.getHeight();
-        texture = new int[texHeight * texWidth];
-
-        try {
-            new PixelGrabber(textureImage, 0, 0, texWidth, texHeight, texture, 0, texWidth).grabPixels();
-        } catch (InterruptedException e) {
-            throw new IOException("Error reading texture file!", e);
-        }
+    public TunnelRenderer(String imageFileName) throws IOException {
+        super(imageFileName);
     }
 
     @Override

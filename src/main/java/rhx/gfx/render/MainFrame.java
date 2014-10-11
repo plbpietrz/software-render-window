@@ -32,7 +32,7 @@ public class MainFrame {
         new Thread(
                 new RenderLoop()
                         .setDrawableSurface(panel)
-                        .setRenderer(new WaterRenderer())
+                        .setRenderer(new WaterRenderer("tunnelarboreatex.png"))
                         .setDisplay(frame)
                         .setMaxFPS(10)
         ).start();
