@@ -1,6 +1,6 @@
 package rhx.gfx.render;
 
-import rhx.gfx.render.tunnel.Renderer;
+import rhx.gfx.render.renderer.Renderer;
 
 import java.awt.*;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +39,8 @@ public class RenderLoop implements Render, Runnable {
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();
+            } finally {
+                stop();
             }
         }
     }

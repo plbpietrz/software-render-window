@@ -1,4 +1,4 @@
-package rhx.gfx.render.tunnel;
+package rhx.gfx.render.renderer;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -6,7 +6,7 @@ import java.awt.image.PixelGrabber;
 import java.io.IOException;
 
 /**
- * Image file based {@link rhx.gfx.render.tunnel.Renderer}. Reads image file that has to be available on the classpath.
+ * Image file based {@link rhx.gfx.render.renderer.Renderer}. Reads image file that has to be available on the classpath.
  * Created by rhinox on 2014-10-11.
  */
 public abstract class ImageRenderer implements Renderer {

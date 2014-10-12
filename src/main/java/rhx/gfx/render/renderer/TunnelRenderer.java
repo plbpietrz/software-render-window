@@ -1,4 +1,4 @@
-package rhx.gfx.render.tunnel;
+package rhx.gfx.render.renderer;
 
 import rhx.gfx.render.Drawable;
 

@@ -1,6 +1,6 @@
 package rhx.gfx.render;
 
-import rhx.gfx.render.tunnel.WaterRenderer;
+import rhx.gfx.render.renderer.WaterRenderer;
 
 import javax.swing.*;
 import java.awt.*;
