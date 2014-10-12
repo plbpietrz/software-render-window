@@ -29,6 +29,7 @@ public class MainFrame {
         JFrame frame = buildFrame(width, height);
         DrawFramePanel panel = new DrawFramePanel(frame);
         frame.add(panel);
+        resizeWindowToFitContent(frame);
         new Thread(
                 new RenderLoop()
                         .setDrawableSurface(panel)
@@ -36,6 +37,12 @@ public class MainFrame {
                         .setDisplay(frame)
                         .setMaxFPS(10)
         ).start();
+    }
+
+    private static void resizeWindowToFitContent(JFrame frame) {
+        Dimension frameSize = frame.getSize();
+        Dimension contentPaneSize = frame.getContentPane().getSize();
+        frame.setSize(new Dimension(2 * frameSize.width - contentPaneSize.width, 2 * frameSize.height - contentPaneSize.height));
     }
 
 
