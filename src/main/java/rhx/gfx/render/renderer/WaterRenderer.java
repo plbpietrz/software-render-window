@@ -13,7 +13,8 @@ import java.io.IOException;
 public class WaterRenderer extends ImageRenderer {
 
     private static final double WATER_RINDEX = 2.0d;
-    private static final int DAMP = 5;
+    private static final int DAMP = 10;
+    private static final int PULSE = 400;
 
     private int scrWidth;
     private int scrHeight;
@@ -37,8 +38,6 @@ public class WaterRenderer extends ImageRenderer {
         outBuffer = new int[offScreenRaster.length];
         waveMapNow = new int[offScreenRaster.length];
         waveMapBefore = new int[offScreenRaster.length];
-
-        waveMapNow[320 + 240 * scrWidth] = 400;
         return this;
     }
 
@@ -112,7 +111,7 @@ public class WaterRenderer extends ImageRenderer {
     }
 
     public ImageRenderer poke(int x, int y) {
-        waveMapNow[x + y * scrWidth] = 400;
+        waveMapNow[x + y * scrWidth] = PULSE;
         return this;
     }
 }
