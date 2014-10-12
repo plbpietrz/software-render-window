@@ -13,20 +13,17 @@ import java.io.IOException;
 public class WaterRenderer extends ImageRenderer {
 
     private static final double WATER_RINDEX = 2.0d;
-    private static final int DAMP = 3;
+    private static final int DAMP = 5;
 
     private int scrWidth;
     private int scrHeight;
 
-    private int[] waveMap;
+    private int[] waveMapNow;
     private int[] outBuffer;
-    private int[] waveMapLast;
+    private int[] waveMapBefore;
 
     public WaterRenderer(String imageFileName) throws IOException{
         super(imageFileName);
-        waveMap = new int[texture.length];
-        waveMapLast = new int[texture.length];
-        outBuffer = new int[texture.length];
     }
 
     @Override
@@ -35,7 +32,13 @@ public class WaterRenderer extends ImageRenderer {
         scrWidth = dimension.width;
         scrHeight = dimension.height;
 
-        waveMap[127 + 126 * texWidth] = 400;
+        DataBufferInt dataBuffer = (DataBufferInt) drawable.getDrawableRaster().getDataBuffer();
+        int[] offScreenRaster = dataBuffer.getData();
+        outBuffer = new int[offScreenRaster.length];
+        waveMapNow = new int[offScreenRaster.length];
+        waveMapBefore = new int[offScreenRaster.length];
+
+        waveMapNow[320 + 240 * scrWidth] = 400;
         return this;
     }
 
@@ -49,30 +52,30 @@ public class WaterRenderer extends ImageRenderer {
 
     private void updateWaveMap() {
         int n;
-        for (int y = 1; y < texHeight - 1; ++y) {
-            for (int x = 1; x < texWidth - 1; ++x) {
+        for (int y = 1; y < scrHeight - 1; ++y) {
+            for (int x = 1; x < scrWidth - 1; ++x) {
                 n = (
-                        waveMap[x + 1 + y * texWidth] +
-                        waveMap[x - 1 + y * texWidth] +
-                        waveMap[x + (y + 1) * texWidth] +
-                        waveMap[x + (y - 1) * texWidth]
-                ) / 2 - waveMapLast[x + y * texWidth];
+                        waveMapNow[x + 1 + y * scrWidth] +
+                        waveMapNow[x - 1 + y * scrWidth] +
+                        waveMapNow[x + (y + 1) * scrWidth] +
+                        waveMapNow[x + (y - 1) * scrWidth]
+                ) / 2 - waveMapBefore[x + y * scrWidth];
                 n = n - n / DAMP;
-                waveMapLast[x + y * texWidth] = n;
+                waveMapBefore[x + y * scrWidth] = n;
             }
         }
-        int [] waveMapTmp = waveMap;
-        waveMap = waveMapLast;
-        waveMapLast = waveMapTmp;
+        int [] waveMapTmp = waveMapNow;
+        waveMapNow = waveMapBefore;
+        waveMapBefore = waveMapTmp;
     }
 
     private void updateOutputBuffer() {
         int xDiff, yDiff, xDisplace, yDisplace, pixel;
         double xAngle, xRefraction, yAngle, yRefraction;
-        for (int y = 1; y < texHeight - 1; ++y) {
-            for (int x = 1; x < texWidth - 1; ++x) {
-                xDiff = waveMap[x+1 + y * texWidth] - waveMap[x + y * texWidth];
-                yDiff = waveMap[x + (y + 1) * texWidth] - waveMap[x + y * texWidth];
+        for (int y = 1; y < scrHeight - 1; ++y) {
+            for (int x = 1; x < scrWidth - 1; ++x) {
+                xDiff = waveMapNow[x + 1 + y * scrWidth] - waveMapNow[x + y * scrWidth];
+                yDiff = waveMapNow[x + (y + 1) * scrWidth] - waveMapNow[x + y * scrWidth];
 
                 xAngle = Math.atan(xDiff);
                 xRefraction = Math.asin(Math.sin(xAngle) / WATER_RINDEX);
@@ -83,12 +86,16 @@ public class WaterRenderer extends ImageRenderer {
                 yDisplace = (int) (Math.tan(yRefraction) * yDiff);
 
                 if (xDiff < 0)
-                    if (yDiff < 0) pixel = texture[x - xDisplace + (y - yDisplace) * texWidth];
-                    else pixel = texture[x - xDisplace + (y + yDisplace) * texWidth];
+                    if (yDiff < 0)
+                        pixel = texture[(x - xDisplace) * texWidth / scrWidth + ((y - yDisplace) * texHeight / scrHeight) * texWidth];
+                    else
+                        pixel = texture[(x - xDisplace) * texWidth / scrWidth + ((y + yDisplace) * texHeight / scrHeight) * texWidth];
                 else
-                    if (yDiff < 0) pixel = texture[x + xDisplace + (y - yDisplace) * texWidth];
-                    else pixel = texture[x + xDisplace + (y + yDisplace) * texWidth];
-                outBuffer[x + y * texWidth] = pixel;
+                    if (yDiff < 0)
+                        pixel = texture[(x + xDisplace) * texWidth / scrWidth + ((y - yDisplace) * texHeight / scrHeight) * texWidth];
+                    else
+                        pixel = texture[(x + xDisplace) * texWidth / scrWidth + ((y + yDisplace) * texHeight / scrHeight) * texWidth];
+                outBuffer[x + y * scrWidth] = pixel;
             }
         }
     }
@@ -99,8 +106,13 @@ public class WaterRenderer extends ImageRenderer {
 
         for (int y = 0; y < scrHeight; ++y) {
             for (int x = 0; x < scrWidth; ++x) {
-                offScreenRaster[x + y * scrWidth] = outBuffer[x * texWidth / scrWidth + (y * texHeight / scrHeight) * texWidth];
+                offScreenRaster[x + y * scrWidth] = outBuffer[x + y * scrWidth];
             }
         }
+    }
+
+    public ImageRenderer poke(int x, int y) {
+        waveMapNow[x + y * scrWidth] = 400;
+        return this;
     }
 }

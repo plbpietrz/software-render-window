@@ -4,6 +4,8 @@ import rhx.gfx.render.renderer.WaterRenderer;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.IOException;
 
 /**
@@ -29,12 +31,31 @@ public class MainFrame {
         JFrame frame = buildFrame(width, height);
         DrawFramePanel panel = new DrawFramePanel(frame);
         frame.add(panel);
+        final WaterRenderer renderer = new WaterRenderer("tunnelarboreatex.png");
+        panel.addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                renderer.poke(e.getX(), e.getY());
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {}
+
+            @Override
+            public void mouseReleased(MouseEvent e) {}
+
+            @Override
+            public void mouseEntered(MouseEvent e) {}
+
+            @Override
+            public void mouseExited(MouseEvent e) {}
+        });
         new Thread(
-                new RenderLoop()
-                        .setDrawableSurface(panel)
-                        .setRenderer(new WaterRenderer("tunnelarboreatex.png"))
-                        .setDisplay(frame)
-                        .setMaxFPS(10)
+            new RenderLoop()
+                .setDrawableSurface(panel)
+                .setRenderer(renderer)
+                .setDisplay(frame)
+                .setMaxFPS(10)
         ).start();
     }
 
