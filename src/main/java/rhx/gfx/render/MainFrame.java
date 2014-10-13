@@ -6,6 +6,7 @@ import rhx.gfx.render.renderer.WaterRenderer;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Main frame class.
@@ -28,14 +29,17 @@ public class MainFrame {
         }
 
         final JFrame frame = buildFrame(width, height);
-        DrawFramePanel panel = new DrawFramePanel(frame);
-        frame.add(panel);
         final WaterRenderer renderer = new WaterRenderer("akira.jpg");
+
+        DrawFramePanel panel = new DrawFramePanel(frame);
         panel.addMouseListener(new WaterDropMouseListener(renderer));
+
+        frame.add(panel);
+
         resizeWindowToFitContent(frame);
         final RenderLoop renderLoop = new RenderLoop();
         new Thread(
-            new RenderLoop()
+            renderLoop
                 .setDrawableSurface(panel)
                 .setRenderer(renderer)
                 .setDisplay(frame)

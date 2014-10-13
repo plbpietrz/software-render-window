@@ -73,18 +73,22 @@ public class WaterRenderer extends ImageRenderer {
         double xAngle, xRefraction, yAngle, yRefraction;
         for (int y = 1; y < scrHeight - 1; ++y) {
             for (int x = 1; x < scrWidth - 1; ++x) {
-                xDiff = waveMapNow[x + 1 + y * scrWidth] - waveMapNow[x + y * scrWidth];
-                yDiff = waveMapNow[x + (y + 1) * scrWidth] - waveMapNow[x + y * scrWidth];
+//                xDiff = waveMapNow[x + 1 + y * scrWidth] - waveMapNow[x + y * scrWidth];
+//                yDiff = waveMapNow[x + (y + 1) * scrWidth] - waveMapNow[x + y * scrWidth];
 
-                xAngle = Math.atan(xDiff);
-                xRefraction = Math.asin(Math.sin(xAngle) / WATER_RINDEX);
-                xDisplace = (int) (Math.tan(xRefraction) * xDiff);
-                xDisplaced = (x - xDisplace);
+//                xAngle = Math.atan(xDiff);
+//                xRefraction = Math.asin(Math.sin(xAngle) / WATER_RINDEX);
+//                xDisplace = (int) (Math.tan(xRefraction) * xDiff);
+//                xDisplaced = (x - xDisplace);
 
-                yAngle = Math.atan(yDiff);
-                yRefraction = Math.asin(Math.sin(yAngle) / WATER_RINDEX);
-                yDisplace = (int) (Math.tan(yRefraction) * yDiff);
-                yDisplaced = (y - yDisplace);
+                xDisplaced = ((x - scrWidth) * (1024 - waveMapNow[x + y * scrWidth]) / 1024) + scrWidth;
+
+//                yAngle = Math.atan(yDiff);
+//                yRefraction = Math.asin(Math.sin(yAngle) / WATER_RINDEX);
+//                yDisplace = (int) (Math.tan(yRefraction) * yDiff);
+//                yDisplaced = (y - yDisplace);
+
+                yDisplaced = ((y - scrHeight) * (1024 - waveMapNow[x + y * scrHeight]) / 1024) + scrHeight;
 
                 if (xDisplaced < 0) xDisplaced = 0;
                 if (xDisplaced > scrWidth) xDisplaced = scrWidth - 1;
@@ -99,14 +103,7 @@ public class WaterRenderer extends ImageRenderer {
 
     private void updateScreen(Drawable drawable) {
         DataBufferInt dataBuffer = (DataBufferInt) drawable.getDrawableRaster().getDataBuffer();
-        int[] offScreenRaster = dataBuffer.getData();
-
-//        for (int y = 0; y < scrHeight; ++y) {
-//            for (int x = 0; x < scrWidth; ++x) {
-//                offScreenRaster[x + y * scrWidth] = outBuffer[x + y * scrWidth];
-//            }
-//        }
-
+        System.arraycopy(outBuffer, 0, dataBuffer.getData(), 0, outBuffer.length);
     }
 
     public ImageRenderer poke(int x, int y) {
