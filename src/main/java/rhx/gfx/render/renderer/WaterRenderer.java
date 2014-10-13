@@ -55,9 +55,9 @@ public class WaterRenderer extends ImageRenderer {
             for (int x = 1; x < scrWidth - 1; ++x) {
                 n = ((
                         waveMapNow[x + 1 + y * scrWidth] +
-                                waveMapNow[x - 1 + y * scrWidth] +
-                                waveMapNow[x + (y + 1) * scrWidth] +
-                                waveMapNow[x + (y - 1) * scrWidth]
+                        waveMapNow[x - 1 + y * scrWidth] +
+                        waveMapNow[x + (y + 1) * scrWidth] +
+                        waveMapNow[x + (y - 1) * scrWidth]
                 ) / 2) - waveMapBefore[x + y * scrWidth];
                 n -= n / DAMP;
                 waveMapBefore[x + y * scrWidth] = n;
@@ -101,11 +101,12 @@ public class WaterRenderer extends ImageRenderer {
         DataBufferInt dataBuffer = (DataBufferInt) drawable.getDrawableRaster().getDataBuffer();
         int[] offScreenRaster = dataBuffer.getData();
 
-        for (int y = 0; y < scrHeight; ++y) {
-            for (int x = 0; x < scrWidth; ++x) {
-                offScreenRaster[x + y * scrWidth] = outBuffer[x + y * scrWidth];
-            }
-        }
+//        for (int y = 0; y < scrHeight; ++y) {
+//            for (int x = 0; x < scrWidth; ++x) {
+//                offScreenRaster[x + y * scrWidth] = outBuffer[x + y * scrWidth];
+//            }
+//        }
+
     }
 
     public ImageRenderer poke(int x, int y) {
