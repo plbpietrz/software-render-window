@@ -14,8 +14,9 @@ public class RenderLoop implements Render, Runnable {
     private static final int NOT_SET = -1;
     public static final int ONE_SECOND = 1000;
 
-    private int maxFps = NOT_SET;
+    private int maxFps = NOT_SET, frameCount;
     private boolean renderFlag = true;
+
     private Renderer renderer;
     private Drawable surface;
     private Component display;
@@ -33,6 +34,7 @@ public class RenderLoop implements Render, Runnable {
                 while (renderFlag) {
                     instant = System.currentTimeMillis();
                     render();
+                    frameCount += 1;
                     display.repaint();
                     instant = System.currentTimeMillis() - instant;
                     Thread.sleep(TimeUnit.MILLISECONDS.toMillis(frameBudget - instant));
@@ -84,5 +86,16 @@ public class RenderLoop implements Render, Runnable {
     public RenderLoop setMaxFPS(int fps) {
         this.maxFps = fps;
         return this;
+    }
+
+    /**
+     * Return the number of frames generated from the beginning of the render loop start or the last execution of
+     * this method.
+     * @return number of frames from last execution of this method
+     */
+    public int getFrameCountAndReset() {
+        int tmp = frameCount;
+        frameCount = 0;
+        return tmp;
     }
 }

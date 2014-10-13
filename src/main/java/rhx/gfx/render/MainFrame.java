@@ -5,6 +5,7 @@ import rhx.gfx.render.tunnel.TunnelRenderer;
 import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Main frame class.
@@ -26,17 +27,32 @@ public class MainFrame {
             height = 480;
         }
 
-        JFrame frame = buildFrame(width, height);
+        final JFrame frame = buildFrame(width, height);
         DrawFramePanel panel = new DrawFramePanel(frame);
         frame.add(panel);
         resizeWindowToFitContent(frame);
+        final RenderLoop renderLoop = new RenderLoop();
         new Thread(
-                new RenderLoop()
-                        .setDrawableSurface(panel)
-                        .setRenderer(new TunnelRenderer())
-                        .setDisplay(frame)
-                        .setMaxFPS(10)
+            renderLoop
+                .setDrawableSurface(panel)
+                .setRenderer(new TunnelRenderer())
+                .setDisplay(frame)
+                .setMaxFPS(10)
         ).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        frame.setTitle(SOFTWARE_RENDER_WINDOW + " FPS:" + renderLoop.getFrameCountAndReset());
+                        Thread.sleep(TimeUnit.SECONDS.toMillis(1l));
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
     }
 
     private static void resizeWindowToFitContent(JFrame frame) {
