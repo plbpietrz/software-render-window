@@ -53,13 +53,13 @@ public class WaterRenderer extends ImageRenderer {
         int n;
         for (int y = 1; y < scrHeight - 1; ++y) {
             for (int x = 1; x < scrWidth - 1; ++x) {
-                n = (
+                n = ((
                         waveMapNow[x + 1 + y * scrWidth] +
-                        waveMapNow[x - 1 + y * scrWidth] +
-                        waveMapNow[x + (y + 1) * scrWidth] +
-                        waveMapNow[x + (y - 1) * scrWidth]
-                ) / 2 - waveMapBefore[x + y * scrWidth];
-                n = n - n / DAMP;
+                                waveMapNow[x - 1 + y * scrWidth] +
+                                waveMapNow[x + (y + 1) * scrWidth] +
+                                waveMapNow[x + (y - 1) * scrWidth]
+                ) / 2) - waveMapBefore[x + y * scrWidth];
+                n -= n / DAMP;
                 waveMapBefore[x + y * scrWidth] = n;
             }
         }
@@ -76,41 +76,23 @@ public class WaterRenderer extends ImageRenderer {
                 xDiff = waveMapNow[x + 1 + y * scrWidth] - waveMapNow[x + y * scrWidth];
                 yDiff = waveMapNow[x + (y + 1) * scrWidth] - waveMapNow[x + y * scrWidth];
 
-                if (xDiff == 0 && yDiff == 0) {
-                    xDisplaced = x;
-                    yDisplaced = y;
-                } else {
-                    xAngle = Math.atan(xDiff);
-                    xRefraction = Math.asin(Math.sin(xAngle) / WATER_RINDEX);
-                    xDisplace = (int) (Math.tan(xRefraction) * xDiff);
+                xAngle = Math.atan(xDiff);
+                xRefraction = Math.asin(Math.sin(xAngle) / WATER_RINDEX);
+                xDisplace = (int) (Math.tan(xRefraction) * xDiff);
+                xDisplaced = (x - xDisplace);
 
-                    yAngle = Math.atan(yDiff);
-                    yRefraction = Math.asin(Math.sin(yAngle) / WATER_RINDEX);
-                    yDisplace = (int) (Math.tan(yRefraction) * yDiff);
+                yAngle = Math.atan(yDiff);
+                yRefraction = Math.asin(Math.sin(yAngle) / WATER_RINDEX);
+                yDisplace = (int) (Math.tan(yRefraction) * yDiff);
+                yDisplaced = (y - yDisplace);
 
-                    if (xDiff < 0) {
-                        xDisplaced = Math.abs((x - xDisplace) % scrWidth);
-                        if (yDiff < 0) {
-                            yDisplaced = Math.abs((y - yDisplace) % scrHeight);
-                        } else {
-                            yDisplaced = Math.abs((y + yDisplace) % scrHeight);
-                        }
-                    } else {
-                        xDisplaced = Math.abs((x + xDisplace) % scrWidth);
-                        if (yDiff < 0) {
-                            yDisplaced = Math.abs((y - yDisplace) % scrHeight);
-                        } else {
-                            yDisplaced = Math.abs((y + yDisplace) % scrHeight);
-                        }
-                    }
-                }
+                if (xDisplaced < 0) xDisplaced = 0;
+                if (xDisplaced > scrWidth) xDisplaced = scrWidth - 1;
+                if (yDisplaced < 0) yDisplaced = 0;
+                if (yDisplaced > scrHeight) yDisplaced = scrHeight- 1;
 
-                try {
-                    pixel = texture[(xDisplaced) * texWidth / scrWidth + ((yDisplaced) * texHeight / scrHeight) * texWidth];
-                    outBuffer[x + y * scrWidth] = pixel;
-                }catch (ArrayIndexOutOfBoundsException e) {
-                    e.printStackTrace();
-                }
+                pixel = texture[(xDisplaced) * texWidth / scrWidth + ((yDisplaced) * texHeight / scrHeight) * texWidth];
+                outBuffer[x + y * scrWidth] = pixel;
             }
         }
     }
