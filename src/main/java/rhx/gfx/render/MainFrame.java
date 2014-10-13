@@ -27,11 +27,13 @@ public class MainFrame {
             height = 480;
         }
 
-        JFrame frame = buildFrame(width, height);
+        final JFrame frame = buildFrame(width, height);
         DrawFramePanel panel = new DrawFramePanel(frame);
         frame.add(panel);
         final WaterRenderer renderer = new WaterRenderer("akira.jpg");
         panel.addMouseListener(new WaterDropMouseListener(renderer));
+        resizeWindowToFitContent(frame);
+        final RenderLoop renderLoop = new RenderLoop();
         new Thread(
             new RenderLoop()
                 .setDrawableSurface(panel)
@@ -39,6 +41,26 @@ public class MainFrame {
                 .setDisplay(frame)
                 .setMaxFPS(60)
         ).start();
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    while (true) {
+                        frame.setTitle(SOFTWARE_RENDER_WINDOW + " FPS:" + renderLoop.getFrameCountAndReset());
+                        Thread.sleep(TimeUnit.SECONDS.toMillis(1l));
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+    }
+
+    private static void resizeWindowToFitContent(JFrame frame) {
+        Dimension frameSize = frame.getSize();
+        Dimension contentPaneSize = frame.getContentPane().getSize();
+        frame.setSize(new Dimension(2 * frameSize.width - contentPaneSize.width, 2 * frameSize.height - contentPaneSize.height));
     }
 
 
