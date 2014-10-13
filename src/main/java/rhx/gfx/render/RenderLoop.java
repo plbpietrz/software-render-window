@@ -35,7 +35,9 @@ public class RenderLoop implements Render, Runnable {
                     render();
                     display.repaint();
                     instant = System.currentTimeMillis() - instant;
-                    Thread.sleep(TimeUnit.MILLISECONDS.toMillis(frameBudget - instant));
+                    long duration = frameBudget - instant;
+                    if (duration > 0)
+                        Thread.sleep(TimeUnit.MILLISECONDS.toMillis(duration));
                 }
             } catch (InterruptedException e) {
                 e.printStackTrace();

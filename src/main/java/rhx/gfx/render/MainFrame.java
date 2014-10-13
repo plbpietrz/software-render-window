@@ -55,7 +55,7 @@ public class MainFrame {
                 .setDrawableSurface(panel)
                 .setRenderer(renderer)
                 .setDisplay(frame)
-                .setMaxFPS(10)
+                .setMaxFPS(60)
         ).start();
     }
 

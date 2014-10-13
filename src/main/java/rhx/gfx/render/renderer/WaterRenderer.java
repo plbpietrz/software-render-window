@@ -14,7 +14,7 @@ public class WaterRenderer extends ImageRenderer {
 
     private static final double WATER_RINDEX = 2.0d;
     private static final int DAMP = 10;
-    private static final int PULSE = 400;
+    private static final int PULSE = 100;
 
     private int scrWidth;
     private int scrHeight;
@@ -69,32 +69,48 @@ public class WaterRenderer extends ImageRenderer {
     }
 
     private void updateOutputBuffer() {
-        int xDiff, yDiff, xDisplace, yDisplace, pixel;
+        int xDiff, yDiff, xDisplace, xDisplaced, yDisplace, yDisplaced, pixel;
         double xAngle, xRefraction, yAngle, yRefraction;
         for (int y = 1; y < scrHeight - 1; ++y) {
             for (int x = 1; x < scrWidth - 1; ++x) {
                 xDiff = waveMapNow[x + 1 + y * scrWidth] - waveMapNow[x + y * scrWidth];
                 yDiff = waveMapNow[x + (y + 1) * scrWidth] - waveMapNow[x + y * scrWidth];
 
-                xAngle = Math.atan(xDiff);
-                xRefraction = Math.asin(Math.sin(xAngle) / WATER_RINDEX);
-                xDisplace = (int) (Math.tan(xRefraction) * xDiff);
+                if (xDiff == 0 && yDiff == 0) {
+                    xDisplaced = x;
+                    yDisplaced = y;
+                } else {
+                    xAngle = Math.atan(xDiff);
+                    xRefraction = Math.asin(Math.sin(xAngle) / WATER_RINDEX);
+                    xDisplace = (int) (Math.tan(xRefraction) * xDiff);
 
-                yAngle = Math.atan(yDiff);
-                yRefraction = Math.asin(Math.sin(yAngle) / WATER_RINDEX);
-                yDisplace = (int) (Math.tan(yRefraction) * yDiff);
+                    yAngle = Math.atan(yDiff);
+                    yRefraction = Math.asin(Math.sin(yAngle) / WATER_RINDEX);
+                    yDisplace = (int) (Math.tan(yRefraction) * yDiff);
 
-                if (xDiff < 0)
-                    if (yDiff < 0)
-                        pixel = texture[(x - xDisplace) * texWidth / scrWidth + ((y - yDisplace) * texHeight / scrHeight) * texWidth];
-                    else
-                        pixel = texture[(x - xDisplace) * texWidth / scrWidth + ((y + yDisplace) * texHeight / scrHeight) * texWidth];
-                else
-                    if (yDiff < 0)
-                        pixel = texture[(x + xDisplace) * texWidth / scrWidth + ((y - yDisplace) * texHeight / scrHeight) * texWidth];
-                    else
-                        pixel = texture[(x + xDisplace) * texWidth / scrWidth + ((y + yDisplace) * texHeight / scrHeight) * texWidth];
-                outBuffer[x + y * scrWidth] = pixel;
+                    if (xDiff < 0) {
+                        xDisplaced = Math.abs((x - xDisplace) % scrWidth);
+                        if (yDiff < 0) {
+                            yDisplaced = Math.abs((y - yDisplace) % scrHeight);
+                        } else {
+                            yDisplaced = Math.abs((y + yDisplace) % scrHeight);
+                        }
+                    } else {
+                        xDisplaced = Math.abs((x + xDisplace) % scrWidth);
+                        if (yDiff < 0) {
+                            yDisplaced = Math.abs((y - yDisplace) % scrHeight);
+                        } else {
+                            yDisplaced = Math.abs((y + yDisplace) % scrHeight);
+                        }
+                    }
+                }
+
+                try {
+                    pixel = texture[(xDisplaced) * texWidth / scrWidth + ((yDisplaced) * texHeight / scrHeight) * texWidth];
+                    outBuffer[x + y * scrWidth] = pixel;
+                }catch (ArrayIndexOutOfBoundsException e) {
+                    e.printStackTrace();
+                }
             }
         }
     }
