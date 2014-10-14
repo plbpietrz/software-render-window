@@ -34,8 +34,6 @@ public class RenderLoop implements Render, Runnable {
                 while (renderFlag) {
                     instant = System.currentTimeMillis();
                     render();
-                    frameCount += 1;
-                    display.repaint();
                     instant = System.currentTimeMillis() - instant;
                     Thread.sleep(TimeUnit.MILLISECONDS.toMillis(frameBudget - instant));
                 }
@@ -48,6 +46,8 @@ public class RenderLoop implements Render, Runnable {
     @Override
     public RenderLoop render() {
         renderer.drawOn(surface);
+        frameCount += 1;
+        display.repaint();
         return this;
     }
 
