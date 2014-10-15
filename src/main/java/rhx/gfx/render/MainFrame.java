@@ -1,6 +1,7 @@
 package rhx.gfx.render;
 
-import rhx.gfx.render.tunnel.TunnelRenderer;
+import rhx.gfx.render.renderer.WaterDropMouseListener;
+import rhx.gfx.render.renderer.WaterRenderer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -12,32 +13,37 @@ import java.util.concurrent.TimeUnit;
  */
 public class MainFrame {
 
-    public static final int WIDTH = 0;
-    public static final int HEIGHT = 1;
+    public static final int WIDTH_PARAM = 0;
+    public static final int HEIGHT_PARAM = 1;
     public static final String SOFTWARE_RENDER_WINDOW = "SRW";
 
     public static void main(String[] args) throws IOException {
         final int width;
         final int height;
         if (args.length == 2) {
-            width = Integer.parseInt(args[WIDTH]);
-            height = Integer.parseInt(args[HEIGHT]);
+            width = Integer.parseInt(args[WIDTH_PARAM]);
+            height = Integer.parseInt(args[HEIGHT_PARAM]);
         } else {
             width = 640;
             height = 480;
         }
 
         final JFrame frame = buildFrame(width, height);
+        final WaterRenderer renderer = new WaterRenderer("akira.jpg");
+
         DrawFramePanel panel = new DrawFramePanel(frame);
+        panel.addMouseListener(new WaterDropMouseListener(renderer));
+
         frame.add(panel);
+
         resizeWindowToFitContent(frame);
         final RenderLoop renderLoop = new RenderLoop();
         new Thread(
             renderLoop
                 .setDrawableSurface(panel)
-                .setRenderer(new TunnelRenderer())
+                .setRenderer(renderer)
                 .setDisplay(frame)
-                .setMaxFPS(10)
+                .setMaxFPS(60)
         ).start();
 
         new Thread(new Runnable() {

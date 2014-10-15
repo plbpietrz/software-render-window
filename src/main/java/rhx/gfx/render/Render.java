@@ -1,6 +1,6 @@
 package rhx.gfx.render;
 
-import rhx.gfx.render.tunnel.Renderer;
+import rhx.gfx.render.renderer.Renderer;
 
 import java.awt.*;
 
@@ -19,7 +19,7 @@ public interface Render {
     Render setDrawableSurface(Drawable surface);
 
     /**
-     * Set the active {@link rhx.gfx.render.tunnel.Renderer} object that is suposed to draw on {@link rhx.gfx.render.Drawable} surface
+     * Set the active {@link rhx.gfx.render.renderer.Renderer} object that is suposed to draw on {@link rhx.gfx.render.Drawable} surface
      *
      * @param renderer {@link Renderer} instance
      * @return by fluent conventions it should be the same {@link rhx.gfx.render.Render}
