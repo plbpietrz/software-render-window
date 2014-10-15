@@ -12,9 +12,8 @@ import java.io.IOException;
  */
 public class WaterRenderer extends ImageRenderer {
 
-    private static final double WATER_RINDEX = 2.0d;
-    private static final int DAMP = 10;
-    private static final int PULSE = 100;
+    private static final int DAMP = 7;
+    private static final int PULSE = 512;
 
     private int scrWidth;
     private int scrHeight;
@@ -58,8 +57,8 @@ public class WaterRenderer extends ImageRenderer {
                         waveMapNow[x - 1 + y * scrWidth] +
                         waveMapNow[x + (y + 1) * scrWidth] +
                         waveMapNow[x + (y - 1) * scrWidth]
-                ) / 2) - waveMapBefore[x + y * scrWidth];
-                n -= n / DAMP;
+                ) >> 1) - waveMapBefore[x + y * scrWidth];
+                n -= n >> DAMP;
                 waveMapBefore[x + y * scrWidth] = n;
             }
         }
@@ -69,34 +68,18 @@ public class WaterRenderer extends ImageRenderer {
     }
 
     private void updateOutputBuffer() {
-        int xDiff, yDiff, xDisplace, xDisplaced, yDisplace, yDisplaced, pixel;
-        double xAngle, xRefraction, yAngle, yRefraction;
+        int xDisplaced, yDisplaced;
         for (int y = 1; y < scrHeight - 1; ++y) {
             for (int x = 1; x < scrWidth - 1; ++x) {
-//                xDiff = waveMapNow[x + 1 + y * scrWidth] - waveMapNow[x + y * scrWidth];
-//                yDiff = waveMapNow[x + (y + 1) * scrWidth] - waveMapNow[x + y * scrWidth];
-
-//                xAngle = Math.atan(xDiff);
-//                xRefraction = Math.asin(Math.sin(xAngle) / WATER_RINDEX);
-//                xDisplace = (int) (Math.tan(xRefraction) * xDiff);
-//                xDisplaced = (x - xDisplace);
-
                 xDisplaced = ((x - scrWidth) * (1024 - waveMapNow[x + y * scrWidth]) / 1024) + scrWidth;
-
-//                yAngle = Math.atan(yDiff);
-//                yRefraction = Math.asin(Math.sin(yAngle) / WATER_RINDEX);
-//                yDisplace = (int) (Math.tan(yRefraction) * yDiff);
-//                yDisplaced = (y - yDisplace);
-
-                yDisplaced = ((y - scrHeight) * (1024 - waveMapNow[x + y * scrHeight]) / 1024) + scrHeight;
+                yDisplaced = ((y - scrHeight) * (1024 - waveMapNow[x + y * scrWidth]) / 1024) + scrHeight;
 
                 if (xDisplaced < 0) xDisplaced = 0;
                 if (xDisplaced > scrWidth) xDisplaced = scrWidth - 1;
                 if (yDisplaced < 0) yDisplaced = 0;
                 if (yDisplaced > scrHeight) yDisplaced = scrHeight- 1;
 
-                pixel = texture[(xDisplaced) * texWidth / scrWidth + ((yDisplaced) * texHeight / scrHeight) * texWidth];
-                outBuffer[x + y * scrWidth] = pixel;
+                outBuffer[x + y * scrWidth] = texture[(xDisplaced) * texWidth / scrWidth + ((yDisplaced) * texHeight / scrHeight) * texWidth];;
             }
         }
     }
